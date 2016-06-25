@@ -85,7 +85,6 @@ openstack-config --set ~/allinone-answers.cfg general CONFIG_CINDER_INSTALL n
 openstack-config --set ~/allinone-answers.cfg general CONFIG_SWIFT_INSTALL n
 openstack-config --set ~/allinone-answers.cfg general CONFIG_CEILOMETER_INSTALL n
 
-packstack --gen-answer-file=allinone-answers.cfg
 
 packstack --answer-file=allinone-answers.cfg
 
