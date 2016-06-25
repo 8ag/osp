@@ -1,0 +1,59 @@
+‘GRUB_CMDLINE_LINUX‘ 
+net.ifnames=0 biosdevname=0 kvm-intel.nested=1 
+
+echo “options kvm-intel nested=1″ | sudo tee /etc/modprobe.d/kvm-intel.conf
+
+grub2-mkconfig -o /boot/grub2/grub.cfg
+
+vi /etc/environment
+LANG=en_US.utf-8
+LC_ALL=en_US.utf-8
+
+
+yum install -y https://www.rdoproject.org/repos/rdo-release.rpm
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum install -y screen traceroute bind-utils
+yum -y upgrade
+
+systemctl stop NetworkManager
+systemctl disable NetworkManager
+systemctl start network.service
+systemctl enable network.service
+
+
+yum install -y openstack-packstack openstack-utils
+
+packstack --gen-answer-file=allinone-answers.cfg
+
+
+vi /root/allinone-answers.cfg
+CONFIG_NTP_SERVERS=0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org
+CONFIG_DEFAULT_PASSWORD=admin
+CONFIG_KEYSTONE_ADMIN_PW=admin
+CONFIG_CINDER_VOLUMES_SIZE=4G
+CONFIG_NOVA_COMPUTE_PRIVIF=lo
+CONFIG_NOVA_NETWORK_PRIVIF=lo
+CONFIG_NEUTRON_OVS_BRIDGE_MAPPINGS=physnet1:br-ex
+CONFIG_PROVISION_DEMO=n
+CONFIG_NOVA_NETWORK_PUBIF=eth0
+CONFIG_NEUTRON_OVS_BRIDGE_IFACES=br-ex:eth0
+
+or
+
+openstack-config --set ~/allinone-answers.cfg general CONFIG_NTP_SERVERS 0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org
+openstack-config --set ~/allinone-answers.cfg general CONFIG_DEFAULT_PASSWORD admin
+openstack-config --set ~/allinone-answers.cfg general CONFIG_KEYSTONE_ADMIN_PW admin
+openstack-config --set ~/allinone-answers.cfg general CONFIG_CINDER_VOLUMES_SIZE 4G
+openstack-config --set ~/allinone-answers.cfg general CONFIG_NOVA_COMPUTE_PRIVIF lo
+openstack-config --set ~/allinone-answers.cfg general CONFIG_NOVA_NETWORK_PRIVIF lo
+openstack-config --set ~/allinone-answers.cfg general CONFIG_NEUTRON_OVS_BRIDGE_MAPPINGS physnet1:br-ex
+openstack-config --set ~/allinone-answers.cfg general CONFIG_PROVISION_DEMO n
+openstack-config --set ~/allinone-answers.cfg general CONFIG_NOVA_NETWORK_PUBIF eth0
+openstack-config --set ~/allinone-answers.cfg general CONFIG_NEUTRON_OVS_BRIDGE_IFACES br-ex:eth0
+openstack-config --set ~/allinone-answers.cfg general CONFIG_NAGIOS_INSTALL n
+
+openstack-config --set ~/allinone-answers.cfg general CONFIG_CINDER_INSTALL n
+openstack-config --set ~/allinone-answers.cfg general CONFIG_SWIFT_INSTALL n
+openstack-config --set ~/allinone-answers.cfg general CONFIG_CEILOMETER_INSTALL n
+
+packstack --answer-file=allinone-answers.cfg
