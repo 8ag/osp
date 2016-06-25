@@ -1,3 +1,32 @@
+hostnamectl set-hostname osp.example.com
+
+cat /etc/hosts
+127.0.0.1   osp osp.example.com localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+cat /etc/sysconfig/network-scripts/ifcfg-eth0 
+TYPE="Ethernet"
+BOOTPROTO="none"
+DEFROUTE="yes"
+PEERDNS="yes"
+PEERROUTES="yes"
+IPV4_FAILURE_FATAL="no"
+IPV6INIT="yes"
+IPV6_AUTOCONF="yes"
+IPV6_DEFROUTE="yes"
+IPV6_PEERDNS="yes"
+IPV6_PEERROUTES="yes"
+IPV6_FAILURE_FATAL="no"
+NAME="eth0"
+UUID="aaae345b-f124-43d4-ab5b-1a1871bcaddc"
+DEVICE="eth0"
+ONBOOT="yes"
+IPADDR=192.168.122.63
+NETMASK=255.255.255.0
+GATEWAY=192.168.122.1
+DNS1=192.168.122.1
+
+
 ‘GRUB_CMDLINE_LINUX‘ 
 net.ifnames=0 biosdevname=0 kvm-intel.nested=1 
 
